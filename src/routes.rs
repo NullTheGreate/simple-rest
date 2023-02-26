@@ -16,8 +16,14 @@ async fn user_path(path: web::Path<i32>) -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok().json(user_id))
 }
 
+#[get("/books")]
+async fn books_path() -> Result<HttpResponse, Error> {
+    Ok(HttpResponse::Ok().json(""))
+}
+
 pub fn init_routes(config: &mut web::ServiceConfig) {
     config.service(user_path);
     config.service(users_path);
     config.service(root_path);
+    config.service(books_path);
 }

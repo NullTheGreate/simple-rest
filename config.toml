@@ -65,3 +65,4 @@ private-key = "path/to/cert/key.pem"
 # The `application` table be used to express application-specific settings.
 # See the `README.md` file for more details on how to use this.
 [application]
+db_url = "postgres://user:password@localhost:5433/test_db"
