@@ -4,7 +4,7 @@ mod routes;
 
 use actix_settings::ApplySettings;
 use actix_web::{App, HttpServer};
-use log::{error, trace};
+use log::{error, info, trace};
 
 const APP_TITLE: &str = "SIMPLE API";
 
@@ -14,8 +14,9 @@ async fn main() -> std::io::Result<()> {
 
     let establish_db_connection = db_setup::establish_db_connection();
 
-    if establish_db_connection.is_err() {
-        error!("unable to connect to db")
+    match establish_db_connection {
+        Ok(_con) => info!("Successfully connected to the DB"),
+        Err(error) => error!("Unable to connect the DB {}", error),
     }
 
     HttpServer::new(|| App::new().configure(routes::init_routes))
