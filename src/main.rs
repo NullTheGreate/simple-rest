@@ -10,6 +10,7 @@ const APP_TITLE: &str = "SIMPLE API";
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    env_logger::init();
     trace!("Starting {}", APP_TITLE);
 
     let establish_db_connection = db_setup::establish_db_connection();
