@@ -1,6 +1,8 @@
 mod config;
 mod db_setup;
+mod models;
 mod routes;
+mod schema;
 
 use actix_settings::ApplySettings;
 use actix_web::{App, HttpServer};
