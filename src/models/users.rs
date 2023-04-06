@@ -1,17 +1,17 @@
 use crate::schema::users;
 use diesel::prelude::*;
 
-#[derive(Queryable)]
+#[derive(Queryable, Debug)]
 pub struct User {
     pub user_id: i32,
     pub user_name: String,
     pub email: String,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Debug)]
 #[diesel(table_name = users)]
-pub struct NewUser<'a> {
-    pub user_id: &'a i32,
-    pub user_name: &'a str,
-    pub email: &'a str,
+pub struct NewUser {
+    pub user_id: i32,
+    pub user_name: String,
+    pub email: String,
 }
