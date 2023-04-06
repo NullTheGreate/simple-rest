@@ -1,10 +1,12 @@
 mod config;
 mod db_setup;
+mod models;
 mod routes;
+mod schema;
 
 use actix_settings::ApplySettings;
-use actix_web::{App, HttpServer};
-use log::{error, info, trace};
+use actix_web::{web::Data, App, HttpServer};
+use log::trace;
 
 const APP_TITLE: &str = "SIMPLE API";
 
@@ -13,15 +15,14 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
     trace!("Starting {}", APP_TITLE);
 
-    let establish_db_connection = db_setup::establish_db_connection();
+    let db_pool = Data::new(db_setup::establish_db_connection());
 
-    match establish_db_connection {
-        Ok(_con) => info!("Successfully connected to the DB"),
-        Err(error) => error!("Unable to connect the DB {}", error),
-    }
-
-    HttpServer::new(|| App::new().configure(routes::init_routes))
-        .apply_settings(&config::config())
-        .run()
-        .await
+    HttpServer::new(move || {
+        App::new()
+            .configure(routes::init_routes)
+            .app_data(db_pool.clone())
+    })
+    .apply_settings(&config::config())
+    .run()
+    .await
 }

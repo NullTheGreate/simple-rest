@@ -1,11 +1,14 @@
 use diesel::pg::PgConnection;
-use diesel::Connection;
+use diesel::r2d2::ConnectionManager;
+use r2d2::Pool;
 
 use crate::config;
 
-pub fn establish_db_connection() -> Result<PgConnection, diesel::ConnectionError> {
+pub fn establish_db_connection() -> Pool<ConnectionManager<PgConnection>> {
     let configs = config::application_config();
-    let db_url = configs.application.db_url;
-    PgConnection::establish(&db_url)
-    // _or_else(|_| panic!("Error connecting to {}", db_url))
+    let db_url: String = configs.application.db_url;
+
+    Pool::builder()
+        .build(ConnectionManager::new(db_url))
+        .expect("failed to connect to db")
 }

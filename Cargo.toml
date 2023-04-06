@@ -7,7 +7,24 @@ edition = "2021"
 [dependencies]
 actix-web="4"
 actix-settings="0.6.0"
+<<<<<<< HEAD
 diesel = {version="2.0.3", features=["postgres"]}
 serde = "1.0.152"
 log = "0.4.17"
 env_logger = "0.10.0"
+=======
+diesel = {version="2.0.3", features=["postgres", "r2d2"]}
+serde = "1.0.152"
+log = "0.4.17"
+env_logger = "0.10.0"
+r2d2 = "0.8.10"
+>>>>>>> master
+
+[dependencies]
+actix-web="4"
+actix-settings="0.6.0"
+diesel = {version="2.0.3", features=["postgres", "r2d2"]}
+serde = "1.0.152"
+log = "0.4.17"
+env_logger = "0.10.0"
+r2d2 = "0.8.10"
