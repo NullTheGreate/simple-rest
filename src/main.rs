@@ -1,7 +1,7 @@
 mod config;
 mod db_setup;
 mod models;
-mod routes;
+mod api;
 mod schema;
 
 use actix_settings::ApplySettings;
@@ -19,7 +19,7 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
-            .configure(routes::init_routes)
+            .configure(api::init_routes)
             .app_data(db_pool.clone())
     })
     .apply_settings(&config::config())

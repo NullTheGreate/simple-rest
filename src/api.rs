@@ -9,7 +9,10 @@ async fn root_path(val: String) -> impl Responder {
 }
 
 #[post("/users")]
-async fn users_path(pool: web::Data<Pool<ConnectionManager<PgConnection>>>) -> impl Responder {
+async fn users_path(
+    pool: web::Data<Pool<ConnectionManager<PgConnection>>>,
+    new_user: web::Json<NewUser>,
+) -> impl Responder {
     use crate::schema::users;
 
     let conections_pool = pool.get();
@@ -20,19 +23,12 @@ async fn users_path(pool: web::Data<Pool<ConnectionManager<PgConnection>>>) -> i
 
     let mut con = conections_pool.unwrap();
 
-    let user = NewUser {
-        user_id: 1,
-        user_name: "test 1".into(),
-        email: "test@teset.com".into(),
-    };
-
-    // let values: Vec<User> =
     let row_inserted = diesel::insert_into(users::table)
-        .values(&user)
+        .values(&new_user.into_inner())
         .execute(&mut con)
         .expect("user inserting failed");
 
-    HttpResponse::Ok().body("")
+    HttpResponse::Ok().json(row_inserted)
 }
 
 #[get("/users/{userId}")]
@@ -40,6 +36,13 @@ async fn user_path(
     pool: web::Data<Pool<ConnectionManager<PgConnection>>>,
 ) -> Result<HttpResponse, Error> {
     let user_id = pool.get();
+
+    // if let Err(e) = user_id {
+    //     return Err(e);
+    // }
+
+    let mut con = user_id.unwrap();
+
     Ok(HttpResponse::Ok().json(""))
 }
 
