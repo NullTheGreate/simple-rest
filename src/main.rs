@@ -1,7 +1,7 @@
+mod api;
 mod config;
 mod db_setup;
 mod models;
-mod api;
 mod schema;
 
 use actix_settings::ApplySettings;

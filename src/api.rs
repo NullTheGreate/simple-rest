@@ -1,9 +1,9 @@
-use crate::models::users::NewUser;
 use actix_web::{get, post, web, Error, HttpResponse, Responder};
 use diesel::{prelude::*, r2d2::ConnectionManager};
 use r2d2::Pool;
+use Simple_Rest::models::users::UserOperations;
 
-#[get("/")]
+#[get("/users")]
 async fn root_path(val: String) -> impl Responder {
     HttpResponse::Ok().body("root loaded")
 }
@@ -11,24 +11,13 @@ async fn root_path(val: String) -> impl Responder {
 #[post("/users")]
 async fn users_path(
     pool: web::Data<Pool<ConnectionManager<PgConnection>>>,
-    new_user: web::Json<NewUser>,
+    new_user: web::Json<Simple_Rest::models::users::NewUser>,
 ) -> impl Responder {
-    use crate::schema::users;
+    let mut con = pool.get().unwrap();
 
-    let conections_pool = pool.get();
+    let _ = UserOperations::new_user(new_user, &mut con);
 
-    if let Err(e) = conections_pool {
-        return HttpResponse::InternalServerError().body(format!("{}", e));
-    }
-
-    let mut con = conections_pool.unwrap();
-
-    let row_inserted = diesel::insert_into(users::table)
-        .values(&new_user.into_inner())
-        .execute(&mut con)
-        .expect("user inserting failed");
-
-    HttpResponse::Ok().json(row_inserted)
+    HttpResponse::Ok().json(true)
 }
 
 #[get("/users/{userId}")]
